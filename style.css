@@ -67,3 +67,6 @@ button {
     font-family: 'JetBrains Mono';
     margin-bottom: 60px;
 }
+button:hover {
+    opacity: 80%;
+}
