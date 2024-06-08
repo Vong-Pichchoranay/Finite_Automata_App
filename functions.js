@@ -100,12 +100,7 @@ document.getElementById('Button').addEventListener('click', function() {
     const acceptStates = document.getElementById('AccStateInput').value.split(',').map(item => item.trim());
     const alphabet = document.getElementById('AlpInput').value.split(',').map(item => item.trim());
     const transitionsRaw = document.getElementById('tableInput').value.split(';').map(item => item.trim());
-
-    // const states = document.getElementById('StateInput').value.split(',');
-    // const initialState = document.getElementById('IntStateInput').value.trim();
-    // const acceptStates = document.getElementById('AccStateInput').value.split(',');
-    // const alphabet = document.getElementById('AlpInput').value.split(',');
-    // const transitionsRaw = document.getElementById('tableInput').value.split(';');
+    const data = document.getElementById("data");
 
     let transitions = {};
 
@@ -174,47 +169,125 @@ document.getElementById('Button').addEventListener('click', function() {
     } else {
         console.log('it is an NFA.');
     }
-    // myfa.testString('abba');
 
-    // TAKE 2: NFA  (success)
-    // const myfa = new fa(states, alphabet, initialState, acceptStates, transitionsWithoutAlphabet);
-    // console.log('FSM : '  + myfa);
+    const fsm = {
+        states: states,
+        initialState: initialState,
+        acceptStates: acceptStates,
+        alphabet: alphabet,
+        transitions: transitionsWithoutAlphabet
+    };
 
-    // myfa.testString('abbbaaa');
-
-    // const fsm = {
-    //     states: states,
-    //     initialState: initialState,
-    //     acceptStates: acceptStates,
-    //     alphabet: alphabet,
-    //     transitions: transitionsWithoutAlphabet
-    // };
-
-    // console.log('FSM:', fsm);
-
-    // console.log('states: ' + states[0]);                                    // how to access object
-    // console.log('states: ' + states[1]);
-
-    // console.log('final states: ' + acceptStates[0]);
-
-    // console.log('alphabet: ' + alphabet[0]);
-    // console.log('alphabet: ' + alphabet[1]);
-
-    // console.log('states length: ' + states.length);                         // can use obj.length
+    console.log('FSM:', fsm);
     
+    // Creating a new div to store the FSM data
+    const newDataBox = document.createElement('div');
+    newDataBox.className = 'data-box'; // Adding a class for potential styling
+    newDataBox.innerHTML = `
+        <div>Q = <span class="editable" id="editable-states">${states.join(', ')}</span></div>
+        <div>q&#8320; = <span class="editable" id="editable-initial">${initialState}</span></div>
+        <div>F = <span class="editable" id="editable-accept">${acceptStates.join(', ')}</span></div>
+        <div>X = <span class="editable" id="editable-alphabet">${alphabet.join(', ')}</span></div>
+        <div>σ = <span class="editable" id="editable-transitions">${transitionsRaw.join('; ')}</span></div>
+    `;
 
-    // console.log('states: ' + typeof(states));
-    // console.log('initial state:' + typeof(initialState));
-    // console.log('acccept state:' + typeof(acceptStates));
-    // console.log('alphabet: ' + typeof(alphabet));
-    // console.log('transitions: ' + transitionsWithoutAlphabet[states[0]][0]);    // access transition table
-    // console.log('transitions: ' + transitionsWithoutAlphabet[states[0]][1]);
+    // Creating the action buttons container
+    const actionButtons = document.createElement('div');
+    actionButtons.className = 'action-buttons';
 
-    // console.log('transitions: ' + transitionsWithoutAlphabet[states[1]][0]);
-    // console.log('transitions: ' + transitionsWithoutAlphabet[states[1]][1]);
+    // Creating the delete button
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'delete-button';
+    deleteButton.textContent = 'Delete';
 
+    // Adding event listener to the delete button
+    deleteButton.addEventListener('click', function() {
+        newDataBox.remove();
+    });
 
-    // Storing the FSM in local storage for future use
-    // localStorage.setItem('fsm', JSON.stringify(fsm));
+    // Creating the generate button
+    const generateButton = document.createElement('button');
+    generateButton.className = 'generate-button';
+    generateButton.textContent = 'Generate';
 
+    // Adding event listener to the generate button
+    generateButton.addEventListener('click', function() {
+        // Log the FSM to the console
+        console.log('Generate FSM:', fsm);
+
+        // Store the FSM in local storage
+        localStorage.setItem('fsm', JSON.stringify(fsm));
+    });
+
+    // Creating the edit button
+    const editButton = document.createElement('button');
+    editButton.className = 'edit-button';
+    editButton.textContent = 'Edit';
+
+    // Function to handle edit and save functionality
+    function toggleEditSave() {
+        const isEditing = editButton.textContent === 'Save';
+
+        newDataBox.querySelectorAll('.editable').forEach(function(span) {
+            if (isEditing) {
+                // Save the edited content
+                const input = span.querySelector('textarea, input');
+                span.textContent = input.value;
+                span.className = 'editable';
+            } else {
+                // Convert spans to textareas or inputs for editing
+                let input;
+                if (span.id === 'editable-initial' || span.id === 'editable-alphabet') {
+                    input = document.createElement('input');
+                } else {
+                    input = document.createElement('textarea');
+                }
+                input.value = span.textContent;
+                input.className = 'editable-input';
+                span.textContent = '';
+                span.appendChild(input);
+                span.className = 'editable editable-editing';
+            }
+        });
+
+        // Update FSM with new values
+        if (isEditing) {
+            fsm.states = document.getElementById('editable-states').textContent.split(',').map(item => item.trim());
+            fsm.initialState = document.getElementById('editable-initial').textContent.trim();
+            fsm.acceptStates = document.getElementById('editable-accept').textContent.split(',').map(item => item.trim());
+            fsm.alphabet = document.getElementById('editable-alphabet').textContent.split(',').map(item => item.trim());
+            fsm.transitions = document.getElementById('editable-transitions').textContent.split(';').map(item => item.trim());
+
+            // Update local storage
+            localStorage.setItem('fsm', JSON.stringify(fsm));
+
+            // Change button text back to Edit
+            editButton.textContent = 'Edit';
+        } else {
+            // Change button text to Save
+            editButton.textContent = 'Save';
+        }
+    }
+
+    // Adding event listener to the edit button
+    editButton.addEventListener('click', toggleEditSave);
+
+    actionButtons.appendChild(deleteButton);
+    actionButtons.appendChild(generateButton);
+    actionButtons.appendChild(editButton);
+    newDataBox.appendChild(actionButtons);
+    data.appendChild(newDataBox);
+
+    // Generate a unique key for each FSM
+    const key = `fsm_${Date.now()}`;
+
+    // Store the FSM in local storage with a unique key
+    localStorage.setItem(key, JSON.stringify(fsm));
+
+    // Retrieve stored FSMs from local storage
+    let storedFSMs = JSON.parse(localStorage.getItem('storedFSMs')) || [];
+    storedFSMs.push(key);
+
+    // Store the keys of all stored FSMs
+    localStorage.setItem('storedFSMs', JSON.stringify(storedFSMs));
 });

@@ -66,7 +66,70 @@ button {
     padding: 10px;
     font-family: 'JetBrains Mono';
     margin-bottom: 60px;
+    box-sizing: border-box;
 }
 button:hover {
     opacity: 80%;
+}
+#data {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    flex-direction: column;
+    border-right: 2px solid black;
+    row-gap: 20px;
+    margin-bottom: -20px;
+}
+.data-box {
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+.data-box:hover {
+    background-color: black;
+    opacity: 70%;
+    color: white;
+    height: fit-content;
+}
+.data-box:hover .action-buttons {
+    display: flex;
+    justify-content: center;
+}
+.action-buttons {
+    display: none;
+    gap: 5px;
+}
+.delete-button {
+    background-color: red;
+    cursor: pointer;
+    margin-bottom: 0px; 
+    height: fit-content;
+}
+.delete-button:hover {
+    background-color: darkred;
+}
+.edit-button {
+    background-color: orange;
+    margin-bottom: 0px;
+    cursor: pointer;
+}
+.edit-button:hover {
+    background-color: darkorange;
+}
+.generate-button {
+    background-color: green;
+    margin-bottom: 0px;
+    cursor: pointer;
+}
+.generate-button:hover {
+    background-color: darkgreen;
+}
+input.editable-input, textarea.editable-input {
+    width: 100%; 
+    box-sizing: border-box; 
+    margin-bottom: 10px; 
+    border: 1px solid black; 
+    padding: 5px; 
+    border-radius: 5px; 
 }
