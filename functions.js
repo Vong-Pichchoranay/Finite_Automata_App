@@ -291,3 +291,27 @@ document.getElementById('Button').addEventListener('click', function() {
     // Store the keys of all stored FSMs
     localStorage.setItem('storedFSMs', JSON.stringify(storedFSMs));
 });
+
+    // buttons in result
+    // Event listeners for the buttons
+    document.getElementById('testFAButton').addEventListener('click', function () {
+        let result = checkDFA ? 'It is a DFA.' : 'It is an NFA.';
+        document.getElementById('resultContent').innerText = result;
+    });
+
+    document.getElementById('testStringButton').addEventListener('click', function () {
+        if (testString !== null) {
+            let result = myFA.testString(testString) ? 'String accepted.' : 'String rejected.';
+            document.getElementById('resultContent').innerText = result;
+        }
+    });
+
+    document.getElementById('convertDFAButton').addEventListener('click', function () {
+        myFA.convertToDFA();
+        document.getElementById('resultContent').innerText = 'Convert to DFA function executed.';
+    });
+
+    document.getElementById('minimizeButton').addEventListener('click', function () {
+        myFA.minimize();
+        document.getElementById('resultContent').innerText = 'Minimize function executed.';
+    });
